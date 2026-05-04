@@ -2,4 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/FormulaEngine.Api/FormulaEngine.Api.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FormulaEngine.Tests/FormulaEngine.Tests.csproj" />
+  </Folder>
 </Solution>
