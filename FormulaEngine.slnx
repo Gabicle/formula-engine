@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FormulaEngine.Api/FormulaEngine.Api.csproj" />
+  </Folder>
+</Solution>
