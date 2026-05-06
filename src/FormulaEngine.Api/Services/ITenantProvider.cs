@@ -1,6 +1,8 @@
-﻿namespace FormulaEngine.Api.Services;
+﻿using FormulaEngine.Api.Models;
+
+namespace FormulaEngine.Api.Services;
 
 public interface ITenantProvider
 {
-    string GetTenantId();
+    Tenant GetTenant();
 }

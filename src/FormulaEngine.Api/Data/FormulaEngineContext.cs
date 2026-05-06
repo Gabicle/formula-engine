@@ -12,6 +12,7 @@ public class FormulaEngineContext : DbContext
     public DbSet<Cell> Cells => Set<Cell>();
     public DbSet<Formula> Formulas => Set<Formula>();
     public DbSet<Dependency> Dependencies => Set<Dependency>();
+    public DbSet<Tenant> Tenants => Set<Tenant>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,7 +1,12 @@
-﻿namespace FormulaEngine.Api.Services;
+﻿using FormulaEngine.Api.Models;
+
+namespace FormulaEngine.Api.Services;
 
 public class TenantProvider : ITenantProvider
 {
+    private const string TenantContextKey = TenantConstants.TenantContextKey; 
+    private const string TenantNotResolvedMessage = "Tenant has not been resolved for this request.";
+
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public TenantProvider(IHttpContextAccessor httpContextAccessor)
@@ -9,12 +14,9 @@ public class TenantProvider : ITenantProvider
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string GetTenantId()
+    public Tenant GetTenant()
     {
-        var tenantId = _httpContextAccessor.HttpContext?
-            .Request.Headers["X-Tenant-Id"]
-            .FirstOrDefault();
-
-        return string.IsNullOrEmpty(tenantId) ? throw new UnauthorizedAccessException("Tenant ID is required.") : tenantId;
+        var tenant = _httpContextAccessor.HttpContext?.Items[TenantContextKey] as Tenant;
+        return tenant ?? throw new InvalidOperationException(TenantNotResolvedMessage);
     }
 }

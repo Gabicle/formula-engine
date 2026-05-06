@@ -19,5 +19,10 @@ public class WorkspaceConfiguration : IEntityTypeConfiguration<Workspace>
             .HasMaxLength(256);
 
         entity.HasIndex(w => w.TenantId);
+        
+        entity.HasOne<Tenant>()
+            .WithMany()
+            .HasForeignKey(w => w.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
