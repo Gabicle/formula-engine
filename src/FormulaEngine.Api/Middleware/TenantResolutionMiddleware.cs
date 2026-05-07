@@ -5,16 +5,17 @@ using FormulaEngine.Api.Models;
 using FormulaEngine.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Localization;
 
 namespace FormulaEngine.Api.Middleware;
 
 public class TenantResolutionMiddleware
 {
-    private const string TenantIdHeader         = "X-Tenant-Id";
-    private const string TenantContextKey = TenantConstants.TenantContextKey;    private const string MissingTenantMessage   = "X-Tenant-Id header is required.";
-    private const string InactiveTenantMessage  = "This tenant is inactive.";
-    private const string NotFoundTenantMessage  = "Tenant not found.";
-    private const int    CacheExpiryMinutes     = 5;
+    private const string TenantIdHeader     = "X-Tenant-Id";
+    private const int    CacheExpiryMinutes = 5;
+    private const string TenantNotFoundMessage = "Tenant not found";
+    private const string MissingTenantIdMessage = "X-Tenant-Id header is required";
+
 
     private readonly RequestDelegate _next;
 
@@ -24,16 +25,17 @@ public class TenantResolutionMiddleware
     }
 
     public async Task InvokeAsync(
-        HttpContext          context,
-        FormulaEngineContext db,
-        IDistributedCache    cache)
+        HttpContext                     context,
+        FormulaEngineContext            db,
+        IDistributedCache               cache,
+        IStringLocalizer<ErrorMessages> localizer)
     {
         var tenantId = context.Request.Headers[TenantIdHeader].FirstOrDefault();
 
         if (string.IsNullOrWhiteSpace(tenantId))
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsync(MissingTenantMessage);
+            await context.Response.WriteAsync(MissingTenantIdMessage);
             return;
         }
 
@@ -42,14 +44,7 @@ public class TenantResolutionMiddleware
         if (tenant is null)
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsync(NotFoundTenantMessage);
-            return;
-        }
-
-        if (!tenant.IsActive)
-        {
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            await context.Response.WriteAsync(InactiveTenantMessage);
+            await context.Response.WriteAsync(TenantNotFoundMessage);
             return;
         }
 
@@ -57,7 +52,14 @@ public class TenantResolutionMiddleware
         CultureInfo.CurrentCulture   = culture;
         CultureInfo.CurrentUICulture = culture;
 
-        context.Items[TenantContextKey] = tenant;
+        if (!tenant.IsActive)
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            await context.Response.WriteAsync(localizer["TenantInactive"]);
+            return;
+        }
+
+        context.Items[TenantConstants.TenantContextKey] = tenant;
 
         await _next(context);
     }

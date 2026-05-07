@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddSingleton<IFunctionLanguage, EnglishFunctions>();
 builder.Services.AddSingleton<IFunctionLanguage, FrenchFunctions>();
 builder.Services.AddSingleton<FunctionRegistry>();
