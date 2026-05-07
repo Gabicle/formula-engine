@@ -1,4 +1,4 @@
-﻿namespace FormulaEngine.Api.Engine.Functions.Languages;
+namespace FormulaEngine.Api.Engine.Functions.Languages;
 
 public interface IFunctionLanguage
 {

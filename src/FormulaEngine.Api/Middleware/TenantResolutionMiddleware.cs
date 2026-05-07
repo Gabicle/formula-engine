@@ -1,18 +1,18 @@
-﻿using System.Globalization;
-using System.Text.Json;
 using FormulaEngine.Api.Data;
 using FormulaEngine.Api.Models;
 using FormulaEngine.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
+using System.Globalization;
+using System.Text.Json;
 
 namespace FormulaEngine.Api.Middleware;
 
 public class TenantResolutionMiddleware
 {
-    private const string TenantIdHeader     = "X-Tenant-Id";
-    private const int    CacheExpiryMinutes = 5;
+    private const string TenantIdHeader = "X-Tenant-Id";
+    private const int CacheExpiryMinutes = 5;
     private const string TenantNotFoundMessage = "Tenant not found";
     private const string MissingTenantIdMessage = "X-Tenant-Id header is required";
 
@@ -25,9 +25,9 @@ public class TenantResolutionMiddleware
     }
 
     public async Task InvokeAsync(
-        HttpContext                     context,
-        FormulaEngineContext            db,
-        IDistributedCache               cache,
+        HttpContext context,
+        FormulaEngineContext db,
+        IDistributedCache cache,
         IStringLocalizer<ErrorMessages> localizer)
     {
         var tenantId = context.Request.Headers[TenantIdHeader].FirstOrDefault();
@@ -49,7 +49,7 @@ public class TenantResolutionMiddleware
         }
 
         var culture = CultureInfo.GetCultureInfo(tenant.CultureCode);
-        CultureInfo.CurrentCulture   = culture;
+        CultureInfo.CurrentCulture = culture;
         CultureInfo.CurrentUICulture = culture;
 
         if (!tenant.IsActive)
@@ -65,11 +65,11 @@ public class TenantResolutionMiddleware
     }
 
     private static async Task<Tenant?> ResolveTenantAsync(
-        string               tenantId,
+        string tenantId,
         FormulaEngineContext db,
-        IDistributedCache    cache)
+        IDistributedCache cache)
     {
-        var cacheKey    = $"tenant:{tenantId}";
+        var cacheKey = $"tenant:{tenantId}";
         var cachedBytes = await cache.GetAsync(cacheKey);
 
         if (cachedBytes is not null)

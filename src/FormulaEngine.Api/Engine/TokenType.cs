@@ -1,4 +1,4 @@
-﻿namespace FormulaEngine.Api.Engine;
+namespace FormulaEngine.Api.Engine;
 
 public enum TokenType
 {

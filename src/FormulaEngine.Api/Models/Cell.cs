@@ -1,4 +1,4 @@
-﻿namespace FormulaEngine.Api.Models;
+namespace FormulaEngine.Api.Models;
 
 public class Cell
 {
@@ -13,8 +13,8 @@ public class Cell
     public Formula? Formula { get; set; }
     public ICollection<Dependency> IncomingDependencies { get; set; } = new List<Dependency>();
     public ICollection<Dependency> OutgoingDependencies { get; set; } = new List<Dependency>();
-    
-    
+
+
     private Cell() { }
 
     public Cell(Guid workspaceId, string key, decimal value)
@@ -26,5 +26,5 @@ public class Cell
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
-    
+
 }

@@ -1,4 +1,4 @@
-﻿using FormulaEngine.Api.Engine;
+using FormulaEngine.Api.Engine;
 
 namespace FormulaEngine.Tests;
 

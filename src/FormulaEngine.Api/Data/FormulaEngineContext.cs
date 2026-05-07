@@ -1,4 +1,4 @@
-﻿using FormulaEngine.Api.Models;
+using FormulaEngine.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FormulaEngine.Api.Data;

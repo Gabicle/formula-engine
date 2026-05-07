@@ -1,4 +1,4 @@
-﻿namespace FormulaEngine.Api.Models;
+namespace FormulaEngine.Api.Models;
 
 public class Dependency
 {
@@ -11,7 +11,7 @@ public class Dependency
     public Workspace Workspace { get; set; } = null!;
     public Cell FromCell { get; set; } = null!;
     public Cell ToCellNav { get; set; } = null!;
-    
+
     private Dependency() { }
 
     public Dependency(Guid workspaceId, Guid fromCellId, Guid toCellId)

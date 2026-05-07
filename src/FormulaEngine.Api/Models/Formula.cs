@@ -1,4 +1,4 @@
-﻿namespace FormulaEngine.Api.Models;
+namespace FormulaEngine.Api.Models;
 
 public class Formula
 {
@@ -10,7 +10,7 @@ public class Formula
     public DateTime UpdatedAt { get; set; }
 
     public Cell Cell { get; set; } = null!;
-    
+
     private Formula() { }
 
     public Formula(Guid cellId, Guid workspaceId, string expression)

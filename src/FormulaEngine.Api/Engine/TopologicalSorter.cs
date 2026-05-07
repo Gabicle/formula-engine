@@ -1,4 +1,4 @@
-﻿
+
 namespace FormulaEngine.Api.Engine;
 
 public class TopologicalSorter
@@ -15,8 +15,8 @@ public class TopologicalSorter
         {
             inDegree[node.Id] = graph.GetIncoming(node.Id).Count;
         }
-        
-        
+
+
         //process zero in-degrees
         foreach (var node in graph.GetAllNodes())
         {
@@ -24,7 +24,7 @@ public class TopologicalSorter
             {
                 queue.Enqueue(node);
             }
-            
+
         }
 
 
@@ -45,7 +45,7 @@ public class TopologicalSorter
 
             }
         }
-        
+
         if (result.Count != graph.GetAllNodes().Count())
             throw new InvalidOperationException(
                 "Circular dependency detected. The graph contains a cycle.");

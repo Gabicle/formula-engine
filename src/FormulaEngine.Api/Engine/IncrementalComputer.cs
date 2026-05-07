@@ -1,4 +1,4 @@
-﻿
+
 namespace FormulaEngine.Api.Engine;
 
 public class IncrementalComputer
@@ -34,7 +34,7 @@ public class IncrementalComputer
                     queue.Enqueue(neighbor);
                 }
             }
-            
+
         }
         return affected;
     }

@@ -1,4 +1,4 @@
-﻿namespace FormulaEngine.Api.Engine;
+namespace FormulaEngine.Api.Engine;
 
 public class DependencyGraph
 {
@@ -9,7 +9,7 @@ public class DependencyGraph
     public void AddNode(CellNode node)
     {
         _nodes[node.Id] = node;
-        _outgoingEdges.TryAdd(node.Id,[]);
+        _outgoingEdges.TryAdd(node.Id, []);
         _incomingEdges.TryAdd(node.Id, []);
     }
 

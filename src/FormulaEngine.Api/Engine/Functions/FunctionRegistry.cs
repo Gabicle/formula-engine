@@ -1,12 +1,12 @@
-﻿using FormulaEngine.Api.Engine.Functions.Languages;
+using FormulaEngine.Api.Engine.Functions.Languages;
 
 namespace FormulaEngine.Api.Engine.Functions;
 
 public sealed class FunctionRegistry
 {
-    private const string UnknownFunctionMessage    = "Unknown function: ";
-    private const string MissingMappingsMessage    = "language is missing canonical function mappings: ";
-    private const string DuplicateAliasMessage     = "Duplicate function alias found: ";
+    private const string UnknownFunctionMessage = "Unknown function: ";
+    private const string MissingMappingsMessage = "language is missing canonical function mappings: ";
+    private const string DuplicateAliasMessage = "Duplicate function alias found: ";
 
     private readonly Dictionary<string, string> _aliasToCanonical;
 
@@ -31,9 +31,9 @@ public sealed class FunctionRegistry
 
     private static void ValidateMappings(IFunctionLanguage language)
     {
-        var mappings        = language.GetMappings();
+        var mappings = language.GetMappings();
         var canonicalValues = mappings.Values.ToHashSet();
-        var missing         = CanonicalFunctionNames.All
+        var missing = CanonicalFunctionNames.All
             .Where(c => !canonicalValues.Contains(c))
             .ToList();
 

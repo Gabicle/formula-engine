@@ -1,4 +1,4 @@
-﻿namespace FormulaEngine.Api.Engine.Localization;
+namespace FormulaEngine.Api.Engine.Localization;
 
 public interface ILocaleSettings
 {

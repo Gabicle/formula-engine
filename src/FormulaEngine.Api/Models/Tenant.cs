@@ -1,4 +1,4 @@
-﻿namespace FormulaEngine.Api.Models;
+namespace FormulaEngine.Api.Models;
 
 public class Tenant
 {
@@ -9,10 +9,10 @@ public class Tenant
 
     public Tenant(string id, string name, string cultureCode)
     {
-        Id          = id;
-        Name        = name;
+        Id = id;
+        Name = name;
         CultureCode = cultureCode;
-        IsActive    = true;
+        IsActive = true;
     }
 
     private Tenant() { }

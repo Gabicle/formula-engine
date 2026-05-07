@@ -1,4 +1,4 @@
-﻿using FormulaEngine.Api.Models;
+using FormulaEngine.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,7 +19,7 @@ public class WorkspaceConfiguration : IEntityTypeConfiguration<Workspace>
             .HasMaxLength(256);
 
         entity.HasIndex(w => w.TenantId);
-        
+
         entity.HasOne<Tenant>()
             .WithMany()
             .HasForeignKey(w => w.TenantId)

@@ -1,6 +1,6 @@
-﻿namespace FormulaEngine.Api;
+namespace FormulaEngine.Api;
 
 public class ErrorMessages
 {
-    
+
 }

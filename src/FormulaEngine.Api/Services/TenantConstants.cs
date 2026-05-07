@@ -1,4 +1,4 @@
-﻿namespace FormulaEngine.Api.Services;
+namespace FormulaEngine.Api.Services;
 
 public static class TenantConstants
 {

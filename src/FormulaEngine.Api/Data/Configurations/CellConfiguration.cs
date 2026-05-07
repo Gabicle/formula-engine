@@ -1,4 +1,4 @@
-﻿using FormulaEngine.Api.Models;
+using FormulaEngine.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
