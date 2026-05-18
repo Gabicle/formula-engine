@@ -45,7 +45,7 @@ public sealed class Lexer(
 
         if (c == '[')
         {
-            return this.ReadBracketedCellReference(span, ref pos);
+            return ReadBracketedCellReference(span, ref pos);
         }
 
         if (char.IsLetter(c))
@@ -83,7 +83,32 @@ public sealed class Lexer(
             string.Format(_localizer["UnexpectedCharacter"], c, pos));
     }
 
-    private Token ReadBracketedCellReference(ReadOnlySpan<char> span, ref int pos) => throw new NotImplementedException();
+    private Token ReadBracketedCellReference(ReadOnlySpan<char> span, ref int pos)
+    {
+        pos++;
+        var start = pos;
+        var hasClosingBracket = false;
+
+        while (pos < span.Length)
+        {
+            if (span[pos] == ']')
+            {
+                hasClosingBracket = true;
+                break;
+            }
+            pos++;
+        }
+
+        if (!hasClosingBracket)
+        {
+            throw new InvalidOperationException(
+                string.Format(_localizer["UnclosedBracket"], pos));
+        }
+
+        var raw = span[start..pos];
+        pos++;
+        return Token.CellReference(raw);
+    }
 
     private Token ReadWord(ReadOnlySpan<char> span, ref int pos) => throw new NotImplementedException();
 

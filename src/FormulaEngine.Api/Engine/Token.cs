@@ -14,4 +14,6 @@ public record Token(TokenType Type, string Value)
     public static readonly Token EndOfExpression = new(TokenType.EndOfExpression, "");
 
     public static Token Number(double num) => new(TokenType.Number, num.ToString());
+
+    public static Token CellReference(ReadOnlySpan<char> val) => new(TokenType.CellReference, val.ToString());
 }
