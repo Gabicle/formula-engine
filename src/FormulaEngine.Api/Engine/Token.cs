@@ -12,4 +12,6 @@ public record Token(TokenType Type, string Value)
     public static readonly Token RightParenthesis = new(TokenType.RightParenthesis, ")");
     public static readonly Token Comma = new(TokenType.Comma, ",");
     public static readonly Token EndOfExpression = new(TokenType.EndOfExpression, "");
+
+    public static Token Number(double num) => new(TokenType.Number, num.ToString());
 }
