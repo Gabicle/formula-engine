@@ -107,7 +107,7 @@ public sealed class Lexer(
 
         var raw = span[start..pos];
         pos++;
-        return Token.CellReference(raw);
+        return Token.CellReference(raw.ToString());
     }
 
     private Token ReadWord(ReadOnlySpan<char> span, ref int pos)
@@ -161,7 +161,7 @@ public sealed class Lexer(
         }
 
         var raw = span[start..pos];
-        var value = double.Parse(raw, CultureInfo.CurrentCulture);
+        var value = double.Parse(raw, new CultureInfo(_localeSettings.LocaleCode));
         return Token.Number(value);
     }
 

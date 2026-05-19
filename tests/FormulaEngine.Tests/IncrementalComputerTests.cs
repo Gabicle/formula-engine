@@ -5,7 +5,7 @@ namespace FormulaEngine.Tests;
 public class IncrementalComputerTests
 {
     private static CellNode MakeNode(string key) =>
-        new CellNode(Guid.NewGuid(), Guid.NewGuid(), key, 0, null);
+        new(Guid.NewGuid(), Guid.NewGuid(), key, 0, null);
 
     [Fact]
     public void FindAffectedNodes_ChangedNode_ReturnsAllDownstreamNodes()

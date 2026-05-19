@@ -8,8 +8,6 @@ public class FrenchFunctions : IFunctionLanguage
     {
         ["SOMME"] = Sum,
         ["SI"] = If,
-        ["MIN"] = Min,
-        ["MAX"] = Max,
         ["MOYENNE"] = Average,
     };
 }
