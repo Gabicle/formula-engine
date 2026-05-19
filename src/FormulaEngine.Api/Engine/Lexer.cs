@@ -50,7 +50,7 @@ public sealed class Lexer(
 
         if (char.IsLetter(c))
         {
-            return this.ReadWord(span, ref pos);
+            return ReadWord(span, ref pos);
         }
 
         if (char.IsDigit(c))
@@ -110,7 +110,32 @@ public sealed class Lexer(
         return Token.CellReference(raw);
     }
 
-    private Token ReadWord(ReadOnlySpan<char> span, ref int pos) => throw new NotImplementedException();
+    private Token ReadWord(ReadOnlySpan<char> span, ref int pos)
+    {
+        var start = pos;
+
+        while (pos < span.Length)
+        {
+            if (!char.IsLetter(span[pos]))
+            {
+                break;
+            }
+
+            pos++;
+        }
+
+        var raw = span[start..pos];
+        var word = raw.ToString();
+
+
+        if (!_functionRegistry.IsKnownFunction(word))
+        {
+            throw new InvalidOperationException(
+              string.Format(_localizer["UnknownFunction"], pos));
+        }
+
+        return Token.Function(_functionRegistry.Resolve(word));
+    }
 
     private Token ReadNumber(ReadOnlySpan<char> span, ref int pos)
     {

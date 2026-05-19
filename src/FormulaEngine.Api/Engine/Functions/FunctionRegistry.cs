@@ -38,8 +38,10 @@ public sealed class FunctionRegistry
             .ToList();
 
         if (missing.Count > 0)
+        {
             throw new InvalidOperationException(
                 $"{language.GetType().Name} {MissingMappingsMessage}{string.Join(", ", missing)}");
+        }
     }
 
     private void MergeMappings(IFunctionLanguage language)
@@ -47,7 +49,9 @@ public sealed class FunctionRegistry
         foreach (var (alias, canonical) in language.GetMappings())
         {
             if (!_aliasToCanonical.TryAdd(alias, canonical))
+            {
                 throw new InvalidOperationException(DuplicateAliasMessage + alias);
+            }
         }
     }
 }
