@@ -6,83 +6,58 @@ namespace FormulaEngine.Api.Engine;
 
 public class Parser
 {
-
-    private IReadOnlyList<Token> Tokens { get; init; }
-
     private readonly ILocaleSettings _localeSettings;
 
-
+    private IReadOnlyList<Token> Tokens { get; init; }
     private int Position { get; set; }
-    public Parser(IReadOnlyList<Token> tokens,
-     ILocaleSettings localeSettings)
+
+    public Parser(IReadOnlyList<Token> tokens, ILocaleSettings localeSettings)
     {
         Tokens = tokens;
         _localeSettings = localeSettings;
     }
 
+    public IExpression Parse() => ParseComparison();
 
-    public Token Peek() => Tokens[Position];
-
-    public Token Advance() => Tokens[Position++];
-
-    public bool IsAtEnd() => Tokens[Position] == Token.EndOfExpression;
-
-
-    public bool Check(TokenType type) => Peek().Type == type;
-
-    public bool Match(TokenType type)
+    private Token Peek() => Tokens[Position];
+    private Token Advance() => Tokens[Position++];
+    private bool IsAtEnd() => Tokens[Position] == Token.EndOfExpression;
+    private bool Check(TokenType type) => Peek().Type == type;
+    private bool Match(TokenType type)
     {
         var isMatch = Check(type);
-        if (isMatch)
-        {
-            Advance();
-        }
+        if (isMatch) Advance();
         return isMatch;
     }
 
-
-    public IExpression Parse() => ParseComparison();
-
-    public IExpression ParsePrimary()
+    private IExpression ParseComparison()
     {
-        var currentToken = Peek();
+        var left = ParseTerm();
 
-        if (Match(TokenType.Number))
+        while (Check(TokenType.GreaterThan) || Check(TokenType.LessThan) || Check(TokenType.Equals))
         {
-            return GetNumberNode(currentToken, _localeSettings);
-        }
+            BinaryOperator op;
+            if (Match(TokenType.GreaterThan))
+            {
+                op = BinaryOperator.GreaterThan;
+            }
+            else if (Match(TokenType.LessThan))
+            {
+                op = BinaryOperator.LessThan;
+            }
+            else
+            {
+                Match(TokenType.Equals); op = BinaryOperator.Equals;
+            }
 
-        if (Match(TokenType.CellReference))
-        {
-            return GetCellReferenceNode(currentToken);
-        }
-
-        if (Match(TokenType.Function))
-        {
-            return GetFunctionNode(currentToken);
-        }
-
-
-        throw new NotImplementedException();
-    }
-
-
-
-    public IExpression ParseFactor()
-    {
-        var left = ParsePrimary();
-
-        while (Check(TokenType.Multiply) || Check(TokenType.Divide))
-        {
-            var op = Match(TokenType.Multiply) ? BinaryOperator.Multiply : BinaryOperator.Divide;
-            var right = ParsePrimary();
+            var right = ParseTerm();
             left = new BinaryNode(left, right, op);
         }
 
         return left;
     }
 
-    public IExpression ParseTerm()
+    private IExpression ParseTerm()
     {
         var left = ParseFactor();
 
@@ -96,22 +71,34 @@ public class Parser
         return left;
     }
 
-    public IExpression ParseComparison()
+    private IExpression ParseFactor()
     {
-        var left = ParseTerm();
+        var left = ParsePrimary();
 
-        while (Check(TokenType.GreaterThan) || Check(TokenType.LessThan) || Check(TokenType.Equals))
+        while (Check(TokenType.Multiply) || Check(TokenType.Divide))
         {
-            BinaryOperator op;
-            if (Match(TokenType.GreaterThan)) op = BinaryOperator.GreaterThan;
-            else if (Match(TokenType.LessThan)) op = BinaryOperator.LessThan;
-            else { Match(TokenType.Equals); op = BinaryOperator.Equals; }
-
-            var right = ParseTerm();
+            var op = Match(TokenType.Multiply) ? BinaryOperator.Multiply : BinaryOperator.Divide;
+            var right = ParsePrimary();
             left = new BinaryNode(left, right, op);
         }
 
         return left;
+    }
+
+    private IExpression ParsePrimary()
+    {
+        var currentToken = Peek();
+
+        if (Match(TokenType.Number))
+            return GetNumberNode(currentToken, _localeSettings);
+
+        if (Match(TokenType.CellReference))
+            return GetCellReferenceNode(currentToken);
+
+        if (Match(TokenType.Function))
+            return GetFunctionNode(currentToken);
+
+        throw new NotImplementedException();
     }
 
     private IExpression GetFunctionNode(Token currentToken)
@@ -123,7 +110,7 @@ public class Parser
 
         while (!Check(TokenType.RightParenthesis))
         {
-            arguments.Add(ParsePrimary());
+            arguments.Add(ParseComparison());
             Match(TokenType.Comma);
         }
 
@@ -131,12 +118,12 @@ public class Parser
         return new FunctionNode(name, arguments);
     }
 
-    private static CellReferenceNode GetCellReferenceNode(Token currentToken) => new(currentToken.Value);
+    private static CellReferenceNode GetCellReferenceNode(Token currentToken) =>
+        new(currentToken.Value);
+
     private static NumberNode GetNumberNode(Token currentToken, ILocaleSettings localeSettings)
     {
         var value = double.Parse(currentToken.Value, new CultureInfo(localeSettings.LocaleCode));
         return new NumberNode(value);
     }
-
-
 }
