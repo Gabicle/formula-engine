@@ -7,7 +7,6 @@ namespace FormulaEngine.Api.Engine;
 public class Parser
 {
     private readonly ILocaleSettings _localeSettings;
-
     private IReadOnlyList<Token> Tokens { get; init; }
     private int Position { get; set; }
 
@@ -21,13 +20,19 @@ public class Parser
 
     private Token Peek() => Tokens[Position];
     private Token Advance() => Tokens[Position++];
-    private bool IsAtEnd() => Tokens[Position] == Token.EndOfExpression;
     private bool Check(TokenType type) => Peek().Type == type;
+
     private bool Match(TokenType type)
     {
         var isMatch = Check(type);
         if (isMatch) Advance();
         return isMatch;
+    }
+
+    private Token Consume(TokenType type, string message)
+    {
+        if (Check(type)) return Advance();
+        throw new InvalidOperationException(message);
     }
 
     private IExpression ParseComparison()
@@ -98,13 +103,13 @@ public class Parser
         if (Match(TokenType.Function))
             return GetFunctionNode(currentToken);
 
-        throw new NotImplementedException();
+        throw new InvalidOperationException($"Unexpected token '{Peek().Value}' at position {Position}");
     }
 
     private IExpression GetFunctionNode(Token currentToken)
     {
         var name = currentToken.Value;
-        Match(TokenType.LeftParenthesis);
+        Consume(TokenType.LeftParenthesis, $"Expected '(' after function '{name}'");
 
         var arguments = new List<IExpression>();
 
@@ -114,7 +119,7 @@ public class Parser
             Match(TokenType.Comma);
         }
 
-        Match(TokenType.RightParenthesis);
+        Consume(TokenType.RightParenthesis, $"Expected ')' after arguments in function '{name}'");
         return new FunctionNode(name, arguments);
     }
 
