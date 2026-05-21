@@ -25,14 +25,22 @@ public class Parser
     private bool Match(TokenType type)
     {
         var isMatch = Check(type);
-        if (isMatch) Advance();
+        if (isMatch)
+        {
+            Advance();
+        }
+
         return isMatch;
     }
 
-    private Token Consume(TokenType type, string message)
+    private void Consume(TokenType type, string message)
     {
-        if (Check(type)) return Advance();
-        throw new InvalidOperationException(message);
+        if (!Check(type))
+        {
+            throw new InvalidOperationException(message);
+        }
+
+        Advance();
     }
 
     private IExpression ParseComparison()
@@ -68,8 +76,18 @@ public class Parser
 
         while (Check(TokenType.Plus) || Check(TokenType.Minus))
         {
-            var op = Match(TokenType.Plus) ? BinaryOperator.Add : BinaryOperator.Subtract;
+            BinaryOperator op;
+            if (Match(TokenType.Plus))
+            {
+                op = BinaryOperator.Add;
+            }
+            else
+            {
+                Match(TokenType.Minus);
+                op = BinaryOperator.Subtract;
+            }
             var right = ParseFactor();
+
             left = new BinaryNode(left, right, op);
         }
 
@@ -82,8 +100,18 @@ public class Parser
 
         while (Check(TokenType.Multiply) || Check(TokenType.Divide))
         {
-            var op = Match(TokenType.Multiply) ? BinaryOperator.Multiply : BinaryOperator.Divide;
+            BinaryOperator op;
+            if (Match(TokenType.Multiply))
+            {
+                op = BinaryOperator.Multiply;
+            }
+            else
+            {
+                Match(TokenType.Divide);
+                op = BinaryOperator.Divide;
+            }
             var right = ParsePrimary();
+
             left = new BinaryNode(left, right, op);
         }
 
@@ -106,7 +134,7 @@ public class Parser
         throw new InvalidOperationException($"Unexpected token '{Peek().Value}' at position {Position}");
     }
 
-    private IExpression GetFunctionNode(Token currentToken)
+    private FunctionNode GetFunctionNode(Token currentToken)
     {
         var name = currentToken.Value;
         Consume(TokenType.LeftParenthesis, $"Expected '(' after function '{name}'");
